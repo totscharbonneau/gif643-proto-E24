@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/workspaces/gif643-proto-E24/src/lab_ex4.cpp
+iostream
+-
+sys/shm.h
+-
+sys/mman.h
+-
+sys/fcntl.h
+-
+sys/stat.h
+-
+fcntl.h
+-
+errno.h
+-
+unistd.h
+-
+string.h
+-
+

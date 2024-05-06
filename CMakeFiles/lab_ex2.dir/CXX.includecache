@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/workspaces/gif643-proto-E24/src/lab_ex2.cpp
+cstdio
+-
+thread
+-
+mutex
+-
+queue
+-
+cstdlib
+-
+csignal
+-
+exception
+-
+

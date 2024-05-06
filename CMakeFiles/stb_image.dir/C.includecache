@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/workspaces/gif643-proto-E24/src/stb/stb_image_write.h
+stdlib.h
+-
+stdio.h
+-
+stdarg.h
+-
+stdlib.h
+-
+string.h
+-
+math.h
+-
+assert.h
+-
+
+/workspaces/gif643-proto-E24/src/stb_image.c
+stb/stb_image_write.h
+/workspaces/gif643-proto-E24/src/stb/stb_image_write.h
+
