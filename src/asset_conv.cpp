@@ -25,6 +25,7 @@ using PNGDataPtr = std::shared_ptr<PNGDataVec>;
 
 using PNGHashMap = std::unordered_map<std::string, PNGDataPtr>;
 PNGHashMap png_cache_;
+std::mutex png_cache_mutex_;
 
 
 /// \brief Wraps callbacks from stbi_image_write
@@ -143,7 +144,9 @@ public:
         NSVGrasterizer*     rast            = nullptr;
 
         try {
+            png_cache_mutex_.lock();
             if (png_cache_.find(fname_out) == png_cache_.end()){
+                png_cache_mutex_.unlock();
                 std::cerr << "Image not found in cache." << std::endl;
                 // Read the file ...
                 image_in = nsvgParseFromFile(fname_in.c_str(), "px", 0);
@@ -169,8 +172,9 @@ public:
                 writer(width, height, BPP, &image_data[0], stride);
 
                 // Write in cache
-
+                png_cache_mutex_.lock();
                 png_cache_[fname_out] = writer.getData();
+                png_cache_mutex_.unlock();
 
                 // Write it out ...
                 std::ofstream file_out(fname_out, std::ofstream::binary);
@@ -180,6 +184,7 @@ public:
             else{
                 std::cerr << "Image found in cache." << std::endl;
                 PNGDataPtr data = png_cache_[fname_out];
+                png_cache_mutex_.unlock();
                 std::ofstream file_out(fname_out, std::ofstream::binary);
                 file_out.write(&(data->front()), data->size());
             }
@@ -357,7 +362,7 @@ private:
                 TaskRunner runner(task_def);
                 runner();
             }
-            task_queue_mutex_.unlock();
+            else task_queue_mutex_.unlock();
         }
     }
 };
@@ -385,7 +390,7 @@ int main(int argc, char** argv)
         std::cerr << "Using stdin (press CTRL-D for EOF)." << std::endl;
     }
 
-    Processor proc;
+    Processor proc(std::atoi(argv[2]));
     
     while (!std::cin.eof()) {
 
