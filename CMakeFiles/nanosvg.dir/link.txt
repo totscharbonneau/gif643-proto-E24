@@ -1,2 +1,0 @@
-/usr/bin/ar qc libnanosvg.a CMakeFiles/nanosvg.dir/src/nanosvg.c.o
-/usr/bin/ranlib libnanosvg.a

@@ -208,6 +208,7 @@ class Processor
 private:
     // The tasks to run queue (FIFO).
     std::queue<TaskDef> task_queue_;
+    std::mutex task_queue_mutex_;
 
     // The cache hash map (TODO). Note that we use the string definition as the // key.
     using PNGHashMap = std::unordered_map<std::string, PNGDataPtr>;
@@ -217,7 +218,6 @@ private:
                                 // threads.
 
     std::vector<std::thread> queue_threads_;
-    std::mutex queue_threads_mutex_;
 
 public:
     /// \brief Default constructor.
@@ -237,19 +237,19 @@ public:
                       << std::endl;
             n_threads = NUM_THREADS;
         }
-
+        
         for (int i = 0; i < n_threads; ++i) {
-
+            
             queue_threads_.push_back(
                 std::thread(&Processor::processQueue, this)
             );
         }
-    }
+            }
 
     ~Processor()
     {
         should_run_ = false;
-        for (auto& qthread: queue_threads_) {
+                for (auto& qthread: queue_threads_) {
             qthread.join();
         }
     }
@@ -314,14 +314,19 @@ public:
         TaskDef def;
         if (parse(line_org, def)) {
             std::cerr << "Queueing task '" << line_org << "'." << std::endl;
+            task_queue_mutex_.lock();
             task_queue_.push(def);
+            task_queue_mutex_.unlock();
         }
     }
 
     /// \brief Returns if the internal queue is empty (true) or not.
     bool queueEmpty()
     {
-        return task_queue_.empty();
+        task_queue_mutex_.lock();
+        bool isEmpty = task_queue_.empty();
+        task_queue_mutex_.unlock();
+        return isEmpty;
     }
 
 private:
@@ -329,12 +334,15 @@ private:
     void processQueue()
     {
         while (should_run_) {
+            task_queue_mutex_.lock();
             if (!task_queue_.empty()) {
                 TaskDef task_def = task_queue_.front();
                 task_queue_.pop();
+                task_queue_mutex_.unlock();
                 TaskRunner runner(task_def);
                 runner();
             }
+            task_queue_mutex_.unlock();
         }
     }
 };

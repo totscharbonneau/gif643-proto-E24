@@ -3,3 +3,13 @@
 build*
 .DS_Store
 __pycache__
+asset_conv
+CMake*
+cmake*
+err.log
+lab_ex1
+lab_ex2
+lab_ex3
+lab_ex4
+Makefile
+.vscode
