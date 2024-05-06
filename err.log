@@ -1,0 +1,18 @@
+Using stdin (press CTRL-D for EOF).
+Queueing task 'data/ic_adb_48px.svg;out-480.png;480'.
+Running for data/ic_adb_48px.svg...
+Image not found in cache.
+Running for Running for data/ic_adb_48px.svg...
+Image not found in cache.
+data/ic_adb_48px.svg...
+Image not found in cache.
+Running for data/ic_adb_48px.svg...
+Image not found in cache.
+
+Done for data/ic_adb_48px.svg.
+
+Done for data/ic_adb_48px.svg.
+
+Done for data/ic_adb_48px.svg
+Done for data/ic_adb_48px.svg.
+.

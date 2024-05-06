@@ -23,6 +23,10 @@ const int       NUM_THREADS = 1;    // Default value, changed by argv.
 using PNGDataVec = std::vector<char>;
 using PNGDataPtr = std::shared_ptr<PNGDataVec>;
 
+using PNGHashMap = std::unordered_map<std::string, PNGDataPtr>;
+PNGHashMap png_cache_;
+
+
 /// \brief Wraps callbacks from stbi_image_write
 //
 // Provides a static method to give to stbi_write_png_to_func (rawCallback),
@@ -139,17 +143,18 @@ public:
         NSVGrasterizer*     rast            = nullptr;
 
         try {
-            // Read the file ...
-            image_in = nsvgParseFromFile(fname_in.c_str(), "px", 0);
-            if (image_in == nullptr) {
-                std::string msg = "Cannot parse '" + fname_in + "'.";
-                throw std::runtime_error(msg.c_str());
-            }
-
-            // Raster it ...
-            std::vector<unsigned char> image_data(image_size, 0);
-            rast = nsvgCreateRasterizer();
-            nsvgRasterize(rast,
+            if (png_cache_.find(fname_out) == png_cache_.end()){
+                std::cerr << "Image not found in cache." << std::endl;
+                // Read the file ...
+                image_in = nsvgParseFromFile(fname_in.c_str(), "px", 0);
+                if (image_in == nullptr) {
+                    std::string msg = "Cannot parse '" + fname_in + "'.";
+                    throw std::runtime_error(msg.c_str());
+                }
+                // Raster it ...
+                std::vector<unsigned char> image_data(image_size, 0);
+                rast = nsvgCreateRasterizer();
+                nsvgRasterize(rast,
                           image_in,
                           0,
                           0,
@@ -159,14 +164,25 @@ public:
                           height,
                           stride); 
 
-            // Compress it ...
-            PNGWriter writer;
-            writer(width, height, BPP, &image_data[0], stride);
+                // Compress it ...
+                PNGWriter writer;
+                writer(width, height, BPP, &image_data[0], stride);
 
-            // Write it out ...
-            std::ofstream file_out(fname_out, std::ofstream::binary);
-            auto data = writer.getData();
-            file_out.write(&(data->front()), data->size());
+                // Write in cache
+
+                png_cache_[fname_out] = writer.getData();
+
+                // Write it out ...
+                std::ofstream file_out(fname_out, std::ofstream::binary);
+                auto data = writer.getData();
+                file_out.write(&(data->front()), data->size());
+            }
+            else{
+                std::cerr << "Image found in cache." << std::endl;
+                PNGDataPtr data = png_cache_[fname_out];
+                std::ofstream file_out(fname_out, std::ofstream::binary);
+                file_out.write(&(data->front()), data->size());
+            }
             
         } catch (std::runtime_error e) {
             std::cerr << "Exception while processing "
@@ -175,7 +191,6 @@ public:
                       << e.what()
                       << std::endl;
         }
-        
         // Bring down ...
         nsvgDelete(image_in);
         nsvgDeleteRasterizer(rast);
@@ -211,13 +226,13 @@ private:
     std::mutex task_queue_mutex_;
 
     // The cache hash map (TODO). Note that we use the string definition as the // key.
-    using PNGHashMap = std::unordered_map<std::string, PNGDataPtr>;
-    PNGHashMap png_cache_;
 
     bool should_run_;           // Used to signal the end of the processor to
                                 // threads.
 
     std::vector<std::thread> queue_threads_;
+
+
 
 public:
     /// \brief Default constructor.
@@ -370,7 +385,7 @@ int main(int argc, char** argv)
         std::cerr << "Using stdin (press CTRL-D for EOF)." << std::endl;
     }
 
-    Processor proc(std::atoi(argv[1]));
+    Processor proc;
     
     while (!std::cin.eof()) {
 
