@@ -12,6 +12,7 @@
 #include <string>
 #include <cstring>
 #include <thread>
+#include <mutex>
 
 namespace gif643 {
 
@@ -216,6 +217,7 @@ private:
                                 // threads.
 
     std::vector<std::thread> queue_threads_;
+    std::mutex queue_threads_mutex_;
 
 public:
     /// \brief Default constructor.
@@ -359,8 +361,7 @@ int main(int argc, char** argv)
         std::cerr << "Using stdin (press CTRL-D for EOF)." << std::endl;
     }
 
-    // TODO: change the number of threads from args.
-    Processor proc;
+    Processor proc = Processor(std::atoi(argv[2]));
     
     while (!std::cin.eof()) {
 
