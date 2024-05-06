@@ -370,7 +370,7 @@ int main(int argc, char** argv)
         std::cerr << "Using stdin (press CTRL-D for EOF)." << std::endl;
     }
 
-    Processor proc(std::atoi(argv[2]));
+    Processor proc(std::atoi(argv[1]));
     
     while (!std::cin.eof()) {
 
