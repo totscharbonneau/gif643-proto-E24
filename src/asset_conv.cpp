@@ -239,6 +239,7 @@ public:
         }
 
         for (int i = 0; i < n_threads; ++i) {
+
             queue_threads_.push_back(
                 std::thread(&Processor::processQueue, this)
             );
@@ -361,7 +362,7 @@ int main(int argc, char** argv)
         std::cerr << "Using stdin (press CTRL-D for EOF)." << std::endl;
     }
 
-    Processor proc = Processor(std::atoi(argv[2]));
+    Processor proc(std::atoi(argv[2]));
     
     while (!std::cin.eof()) {
 
