@@ -8,7 +8,7 @@ process_runner () {
 }
 
 
-ITERATORNUMBER=4
+ITERATORNUMBER="${1:-4}"
 echo "Time running asset_conv with $ITERATORNUMBER threads:"
 time ./asset_conv tasks.csv $ITERATORNUMBER 2> /dev/null
 
