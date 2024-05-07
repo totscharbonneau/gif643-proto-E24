@@ -1,7 +1,9 @@
 
 #  Copyright (C) 2009,2011,2020. Max Hofheinz
-
+import matplotlib
+matplotlib.use('Agg')
 import tkinter
+
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
@@ -24,7 +26,6 @@ class Param(tkinter.Frame):
     def get_value(self):
         return self.last_value
 
-    
 
 class ParamFiddle(Param):
     def __init__(self, parent, callback, param_index, param_name, v_min, v_max, v_start=None, resolution=-1):
