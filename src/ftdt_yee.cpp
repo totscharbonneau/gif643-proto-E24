@@ -40,62 +40,53 @@ double* curl_E(double *E) {
     double *curl_E = new double[size_x * size_y * size_z * 3]; // Allocate memory for the curl array
 
     // Compute curl_E
-    std::thread e1([&](){
-        for (int i = 0; i < size_x; ++i) {
-            for (int j = 0; j < size_y - 1; ++j) {
-                for (int k = 0; k < size_z; ++k) {
-                    curl_E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3] += E[i * size_y * size_z * 3 + (j + 1) * size_z * 3 + k * 3 + 2] - E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2];
-                }
+    for (int i = 0; i < size_x; ++i) {
+        for (int j = 0; j < size_y - 1; ++j) {
+            for (int k = 0; k < size_z; ++k) {
+                curl_E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3] += E[i * size_y * size_z * 3 + (j + 1) * size_z * 3 + k * 3 + 2] - E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2];
             }
         }
+    }
 
-        for (int i = 0; i < size_x; ++i) {
-            for (int j = 0; j < size_y; ++j) {
-                for (int k = 0; k < size_z - 1; ++k) {
-                    curl_E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3] -= E[i * size_y * size_z * 3 + j * size_z * 3 + (k + 1) * 3 + 1] - E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1];
-                }
+    for (int i = 0; i < size_x; ++i) {
+        for (int j = 0; j < size_y; ++j) {
+            for (int k = 0; k < size_z - 1; ++k) {
+                curl_E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3] -= E[i * size_y * size_z * 3 + j * size_z * 3 + (k + 1) * 3 + 1] - E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1];
             }
         }
-    });
+    }
 
-    std::thread e2([&](){
-        for (int i = 0; i < size_x; ++i) {
-            for (int j = 0; j < size_y; ++j) {
-                for (int k = 0; k < size_z - 1; ++k) {
-                    curl_E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1] += E[i * size_y * size_z * 3 + j * size_z * 3 + (k + 1) * 3] - E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3];
-                }
+    for (int i = 0; i < size_x; ++i) {
+        for (int j = 0; j < size_y; ++j) {
+            for (int k = 0; k < size_z - 1; ++k) {
+                curl_E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1] += E[i * size_y * size_z * 3 + j * size_z * 3 + (k + 1) * 3] - E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3];
             }
         }
+    }
 
-        for (int i = 0; i < size_x - 1; ++i) {
-            for (int j = 0; j < size_y; ++j) {
-                for (int k = 0; k < size_z; ++k) {
-                    curl_E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1] -= E[(i + 1) * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2] - E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2];
-                }
+    for (int i = 0; i < size_x - 1; ++i) {
+        for (int j = 0; j < size_y; ++j) {
+            for (int k = 0; k < size_z; ++k) {
+                curl_E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1] -= E[(i + 1) * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2] - E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2];
             }
         }
-    });
+    }
 
-    std::thread e3([&](){
-        for (int i = 0; i < size_x - 1; ++i) {
-            for (int j = 0; j < size_y; ++j) {
-                for (int k = 0; k < size_z; ++k) {
-                    curl_E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2] += E[(i + 1) * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1] - E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1];
-                }
+    for (int i = 0; i < size_x - 1; ++i) {
+        for (int j = 0; j < size_y; ++j) {
+            for (int k = 0; k < size_z; ++k) {
+                curl_E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2] += E[(i + 1) * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1] - E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1];
             }
         }
+    }
 
-        for (int i = 0; i < size_x; ++i) {
-            for (int j = 0; j < size_y - 1; ++j) {
-                for (int k = 0; k < size_z; ++k) {
-                    curl_E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2] -= E[i * size_y * size_z * 3 + (j + 1) * size_z * 3 + k * 3] - E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3];
-                }
+    for (int i = 0; i < size_x; ++i) {
+        for (int j = 0; j < size_y - 1; ++j) {
+            for (int k = 0; k < size_z; ++k) {
+                curl_E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2] -= E[i * size_y * size_z * 3 + (j + 1) * size_z * 3 + k * 3] - E[i * size_y * size_z * 3 + j * size_z * 3 + k * 3];
             }
         }
-    });
-    e1.join();
-    e2.join();
-    e3.join();
+    }
     return curl_E;
 }
 
@@ -103,60 +94,53 @@ double* curl_H(double *H) {
     double *curl_H = new double[size_x * size_y * size_z * 3]; // Allocate memory for the curl array
 
     // Compute curl_H
-    std::thread h1([&](){
-        for (int i = 0; i < size_x; ++i) {
-            for (int j = 1; j < size_y; ++j) {
-                for (int k = 0; k < size_z; ++k) {
-                    curl_H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3] += H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2] - H[i * size_y * size_z * 3 + (j - 1) * size_z * 3 + k * 3 + 2];
-                }
-           }
-        }
-        for (int i = 0; i < size_x; ++i) {
-            for (int j = 0; j < size_y; ++j) {
-                for (int k = 1; k < size_z; ++k) {
-                    curl_H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3] -= H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1] - H[i * size_y * size_z * 3 + j * size_z * 3 + (k - 1) * 3 + 1];
-                }
+    for (int i = 0; i < size_x; ++i) {
+        for (int j = 1; j < size_y; ++j) {
+            for (int k = 0; k < size_z; ++k) {
+                curl_H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3] += H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2] - H[i * size_y * size_z * 3 + (j - 1) * size_z * 3 + k * 3 + 2];
             }
         }
-    });
+    }
+    for (int i = 0; i < size_x; ++i) {
+        for (int j = 0; j < size_y; ++j) {
+            for (int k = 1; k < size_z; ++k) {
+                curl_H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3] -= H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1] - H[i * size_y * size_z * 3 + j * size_z * 3 + (k - 1) * 3 + 1];
+            }
+        }
+    }
 
-    std::thread h2([&](){
-        for (int i = 0; i < size_x; ++i) {
-            for (int j = 0; j < size_y; ++j) {
-                for (int k = 1; k < size_z; ++k) {
-                    curl_H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1] += H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3] - H[i * size_y * size_z * 3 + j * size_z * 3 + (k - 1) * 3];
-                }
+    for (int i = 0; i < size_x; ++i) {
+        for (int j = 0; j < size_y; ++j) {
+            for (int k = 1; k < size_z; ++k) {
+                curl_H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1] += H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3] - H[i * size_y * size_z * 3 + j * size_z * 3 + (k - 1) * 3];
             }
         }
+    }
 
-        for (int i = 1; i < size_x; ++i) {
-            for (int j = 0; j < size_y; ++j) {
-                for (int k = 0; k < size_z; ++k) {
-                    curl_H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1] -= H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2] - H[(i - 1) * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2];
-                }
+    for (int i = 1; i < size_x; ++i) {
+        for (int j = 0; j < size_y; ++j) {
+            for (int k = 0; k < size_z; ++k) {
+                curl_H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1] -= H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2] - H[(i - 1) * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2];
             }
         }
-    });
-    std::thread h3([&](){
-        for (int i = 1; i < size_x; ++i) {
-            for (int j = 0; j < size_y; ++j) {
-                for (int k = 0; k < size_z; ++k) {
-                    curl_H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2] += H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1] - H[(i - 1) * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1];
-                }
-            }
-        }
+    }
 
-        for (int i = 0; i < size_x; ++i) {
-            for (int j = 1; j < size_y; ++j) {
-                for (int k = 0; k < size_z; ++k) {
-                    curl_H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2] -= H[i * size_y * size_z * 3 + (j - 1) * size_z * 3 + k * 3] - H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3];
-                }
+    for (int i = 1; i < size_x; ++i) {
+        for (int j = 0; j < size_y; ++j) {
+            for (int k = 0; k < size_z; ++k) {
+                curl_H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2] += H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1] - H[(i - 1) * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 1];
             }
         }
-    });
-    h1.join();
-    h2.join();
-    h3.join();
+    }
+
+    for (int i = 0; i < size_x; ++i) {
+        for (int j = 1; j < size_y; ++j) {
+            for (int k = 0; k < size_z; ++k) {
+                curl_H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3 + 2] -= H[i * size_y * size_z * 3 + (j - 1) * size_z * 3 + k * 3] - H[i * size_y * size_z * 3 + j * size_z * 3 + k * 3];
+            }
+        }
+    }
+
     return curl_H;
 }
 
